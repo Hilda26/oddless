@@ -105,12 +105,19 @@ method set (13 methods on Duel, 6 on Vault), and both report fresh state
 (`get_challenge_count() == 0`, `get_balance() == 0`). `next build` builds
 cleanly against these two addresses in `.env.local`.
 
-**Not yet confirmed: cross-contract wiring** (`Duel.set_vault(vault)`,
-`Vault.set_duel(duel)`). Both are write calls with no corresponding
-public view method, so they cannot be checked read-only — confirm
-directly with whoever deployed, or the first real `fund()` call will
-reveal it immediately (`"Duel contract not configured"` from Vault, or a
-stalled `mark_locked` request, if unwired).
+**Cross-contract wiring: confirmed.** `Duel.set_vault(vault)` and
+`Vault.set_duel(duel)` were both run via `scripts/wire-contracts.ts` and
+reached `ACCEPTED`:
+
+| Call | Tx |
+| --- | --- |
+| `set_vault` | `0x308ddfc757d5102c232f406a9e2c2377b65d666d731890d09bf82b04086e8aa6` |
+| `set_duel` | `0xf0c8ab31b57d76e2534529cbe13db5a884d13cc647a21093606713fba8407c87` |
+
+Both were first-time successful sets (not "already wired" reverts),
+confirming the contracts were unwired before this and are now correctly
+bound to each other. Full record in
+`deployments/studionet-manual-2026-09.json`.
 
 If a *new* deployment is ever needed instead: obtain a Studionet-funded
 private key (e.g. from the GenLayer Studio faucet/dashboard for the

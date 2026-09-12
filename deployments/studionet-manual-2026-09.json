@@ -39,8 +39,17 @@
     }
   },
   "wiring": {
-    "status": "UNCONFIRMED",
-    "note": "set_vault(vault_address) on Duel and set_duel(duel_address) on Vault are write calls with no corresponding public view method, so they cannot be verified read-only. Confirm directly with whoever ran the deployment, or attempt fund() on a real challenge and expect 'Duel contract not configured' / 'Only the deployer' style reverts if unwired."
+    "status": "CONFIRMED",
+    "signer": "0xd5Fbe8dbfFdac681FA50Ed8D082d70Ce43080B1C",
+    "confirmedVia": "scripts/wire-contracts.ts, run by the project owner",
+    "setVault": {
+      "tx": "0x308ddfc757d5102c232f406a9e2c2377b65d666d731890d09bf82b04086e8aa6",
+      "status": "ACCEPTED"
+    },
+    "setDuel": {
+      "tx": "0xf0c8ab31b57d76e2534529cbe13db5a884d13cc647a21093606713fba8407c87",
+      "status": "ACCEPTED"
+    }
   },
   "frontendBuild": {
     "command": "next build",
