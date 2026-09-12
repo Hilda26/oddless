@@ -57,7 +57,7 @@ jobs:
           genvm-lint check contracts/oddless_duel.py
           genvm-lint check contracts/oddless_vault.py
       - name: Direct-mode contract tests (mocked, no live node)
-        run: pytest tests/contract/direct/ -v
+        run: python -m pytest tests/contract/direct/ -v
 
   # ---------------------------------------------------------------------
   # Opt-in only: requires a funded Studionet signer as a repository

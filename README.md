@@ -34,7 +34,7 @@ npm run dev
 ```bash
 python -m venv .venv && source .venv/Scripts/activate  # or .venv/bin/activate on macOS/Linux
 pip install -r requirements.txt
-pytest tests/contract/direct/ -v
+python -m pytest tests/contract/direct/ -v
 ```
 
 ## Repository layout

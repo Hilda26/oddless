@@ -21,7 +21,7 @@ job, which runs it on every push/PR.
 python -m py_compile contracts/oddless_duel.py contracts/oddless_vault.py
 PYTHONIOENCODING=utf-8 genvm-lint check contracts/oddless_duel.py
 PYTHONIOENCODING=utf-8 genvm-lint check contracts/oddless_vault.py
-pytest tests/contract/direct/ -v
+python -m pytest tests/contract/direct/ -v
 npm run hash:contracts
 ```
 
