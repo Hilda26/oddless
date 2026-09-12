@@ -13,7 +13,8 @@
     "test:watch": "vitest",
     "check:network": "tsx scripts/check-network-config.ts",
     "hash:contracts": "tsx scripts/hash-contracts.ts",
-    "deploy": "tsx scripts/deploy.ts"
+    "deploy": "tsx scripts/deploy.ts",
+    "wire": "tsx scripts/wire-contracts.ts"
   },
   "dependencies": {
     "next": "16.3.4",
