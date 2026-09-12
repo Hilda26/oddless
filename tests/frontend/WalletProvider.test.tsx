@@ -39,8 +39,7 @@ class MockProvider {
     if (method === "eth_requestAccounts") {
       if (this.rejectNext) {
         this.rejectNext = false;
-        const err: { code?: number } = new Error("User rejected");
-        err.code = 4001;
+        const err = Object.assign(new Error("User rejected"), { code: 4001 });
         throw err;
       }
       this.accounts = ["0xAbC0000000000000000000000000000000dEaD"];
@@ -71,7 +70,6 @@ let mockProvider: MockProvider | undefined;
 
 beforeEach(() => {
   mockProvider = undefined;
-  // @ts-expect-error test override
   delete window.ethereum;
 });
 
@@ -89,7 +87,6 @@ describe("WalletProvider — no wallet installed", () => {
 describe("WalletProvider — connect flow", () => {
   it("connects and reports CONNECTED on the correct network", async () => {
     mockProvider = new MockProvider();
-    // @ts-expect-error test override
     window.ethereum = mockProvider;
     const user = userEvent.setup();
     renderWithProvider();
@@ -104,7 +101,6 @@ describe("WalletProvider — connect flow", () => {
   it("surfaces USER_REJECTED-style error on connection rejection", async () => {
     mockProvider = new MockProvider();
     mockProvider.rejectNext = true;
-    // @ts-expect-error test override
     window.ethereum = mockProvider;
     const user = userEvent.setup();
     renderWithProvider();
@@ -122,7 +118,6 @@ describe("WalletProvider — wrong network", () => {
     mockProvider = new MockProvider();
     mockProvider.chainId = "0x1"; // mainnet, not Studionet
     mockProvider.accounts = ["0xAbC0000000000000000000000000000000dEaD"];
-    // @ts-expect-error test override
     window.ethereum = mockProvider;
     const user = userEvent.setup();
     renderWithProvider();
@@ -138,7 +133,6 @@ describe("WalletProvider — account/provider changes", () => {
   it("moves to DISCONNECTED when the wallet reports no accounts (provider-initiated disconnect)", async () => {
     mockProvider = new MockProvider();
     mockProvider.accounts = ["0xAbC0000000000000000000000000000000dEaD"];
-    // @ts-expect-error test override
     window.ethereum = mockProvider;
     renderWithProvider();
 
@@ -154,7 +148,6 @@ describe("WalletProvider — account/provider changes", () => {
   it("app-initiated disconnect clears local state", async () => {
     mockProvider = new MockProvider();
     mockProvider.accounts = ["0xAbC0000000000000000000000000000000dEaD"];
-    // @ts-expect-error test override
     window.ethereum = mockProvider;
     const user = userEvent.setup();
     renderWithProvider();
