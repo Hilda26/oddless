@@ -10,6 +10,7 @@
  * Usage:
  *   DEPLOYER_PRIVATE_KEY=0x... npx tsx scripts/deploy.ts
  */
+import "./_load-env";
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { execSync } from "node:child_process";

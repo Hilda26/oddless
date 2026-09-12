@@ -14,6 +14,7 @@
  * Reads the two contract addresses from .env.local
  * (NEXT_PUBLIC_DUEL_CONTRACT_ADDRESS / NEXT_PUBLIC_VAULT_CONTRACT_ADDRESS).
  */
+import "./_load-env";
 import { createClient, createAccount } from "genlayer-js";
 import { TransactionStatus } from "genlayer-js/types";
 import { oddlessChain, assertCanonicalNetwork, NETWORK } from "../lib/genlayer/network";

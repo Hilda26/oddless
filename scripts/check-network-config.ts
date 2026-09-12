@@ -8,6 +8,7 @@
  * (lib/genlayer/network.ts), so it can never pass while the app itself
  * is misconfigured.
  */
+import "./_load-env";
 import {
   NETWORK,
   STUDIONET_CHAIN_ID,
