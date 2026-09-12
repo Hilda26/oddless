@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------
+   ODDLESS design tokens — head-to-head event poster / split-screen duel
+   card. Paper poster ground, ink black, two duel colors (red / blue),
+   acid yellow accent, silver neutral. See docs/ARCHITECTURE.md §Visual
+   System for the design thesis this implements.
+--------------------------------------------------------------------- */
+@theme {
+  --color-paper: #f2f0ea;
+  --color-ink: #101010;
+  --color-side-a: #f04444; /* electric red */
+  --color-side-b: #2c55e8; /* royal blue */
+  --color-acid: #f0e94e; /* acid yellow */
+  --color-silver: #b8babe;
+
+  --color-paper-dim: #e7e4db;
+  --color-ink-soft: #2a2a2a;
+  --color-side-a-dim: #c23333;
+  --color-side-b-dim: #1f3fb8;
+
+  --font-display: var(--font-anton), "Arial Narrow", sans-serif;
+  --font-ui: var(--font-inter-tight), "Inter", system-ui, sans-serif;
+  --font-meta: var(--font-roboto-mono), "SFMono-Regular", monospace;
+
+  --animate-marquee: marquee 22s linear infinite;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-ink);
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-ui);
+  }
+
+  /* Visible focus ring everywhere — never suppressed. */
+  :focus-visible {
+    outline: 3px solid var(--color-acid);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-acid);
+    color: var(--color-ink);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .font-meta {
+    font-family: var(--font-meta);
+  }
+}
+
+@layer utilities {
+  .text-stroke {
+    -webkit-text-stroke: 1.5px var(--color-ink);
+  }
+
+  .halftone-shadow {
+    box-shadow: 6px 6px 0 0 var(--color-ink);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Respect reduced-motion system preference everywhere, including
+   third-party animation libraries driven by CSS custom properties. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

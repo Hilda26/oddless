@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  frontend:
+    name: Frontend (lint, typecheck, test, build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run check:network
+      - run: npm test
+      - name: Production build
+        run: npm run build
+        env:
+          # Placeholder addresses so the build succeeds without a live
+          # deployment; real values are injected at deploy time.
+          NEXT_PUBLIC_DUEL_CONTRACT_ADDRESS: "0x0000000000000000000000000000000000000000"
+          NEXT_PUBLIC_VAULT_CONTRACT_ADDRESS: "0x0000000000000000000000000000000000000000"
+
+  contracts:
+    name: Contracts (compile, lint, direct tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Python syntax check
+        run: |
+          python -m py_compile contracts/oddless_duel.py
+          python -m py_compile contracts/oddless_vault.py
+      - name: GenVM static lint
+        run: |
+          genvm-lint check contracts/oddless_duel.py
+          genvm-lint check contracts/oddless_vault.py
+      - name: Direct-mode contract tests (mocked, no live node)
+        run: pytest tests/contract/direct/ -v
+
+  # ---------------------------------------------------------------------
+  # Opt-in only: requires a funded Studionet signer as a repository
+  # secret. Never runs automatically on push/PR — triggered by hand from
+  # the Actions tab. The signer is used solely to submit test
+  # transactions to Studionet; it is never part of the shipped app and
+  # never touches NEXT_PUBLIC_* build output.
+  # ---------------------------------------------------------------------
+  integration:
+    name: Integration (live Studionet, opt-in)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Run integration tests against Studionet
+        env:
+          DEPLOYER_PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+        run: gltest tests/contract/integration/ -v -s

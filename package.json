@@ -1,0 +1,46 @@
+{
+  "name": "oddless",
+  "version": "0.1.0",
+  "private": true,
+  "description": "No-house, equal-stake, two-wallet public-event duels settled by GenLayer Intelligent Contracts on Studionet.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check:network": "tsx scripts/check-network-config.ts",
+    "hash:contracts": "tsx scripts/hash-contracts.ts",
+    "deploy": "tsx scripts/deploy.ts"
+  },
+  "dependencies": {
+    "next": "16.3.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "genlayer-js": "1.1.8",
+    "viem": "2.56.3",
+    "framer-motion": "13.2.0",
+    "zod": "4.5.4",
+    "lucide-react": "0.469.0"
+  },
+  "devDependencies": {
+    "typescript": "5.7.3",
+    "@types/node": "22.10.5",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "tailwindcss": "4.3.3",
+    "@tailwindcss/postcss": "4.3.3",
+    "eslint": "9.18.0",
+    "eslint-config-next": "16.3.4",
+    "@eslint/eslintrc": "3.2.0",
+    "vitest": "2.1.8",
+    "@vitejs/plugin-react": "4.3.4",
+    "@testing-library/react": "16.1.0",
+    "@testing-library/jest-dom": "6.6.3",
+    "@testing-library/user-event": "14.5.2",
+    "jsdom": "25.0.1",
+    "tsx": "4.19.2"
+  }
+}

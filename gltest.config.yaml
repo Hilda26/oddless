@@ -1,0 +1,15 @@
+networks:
+  default: localnet
+
+  localnet:
+    url: "http://127.0.0.1:4000/api"
+
+  # Canonical target for integration evidence. genlayer-js and the rest of
+  # the app never touch localnet or Studio-dev (61997) — see
+  # lib/genlayer/network.ts and scripts/check-network-config.ts.
+  studionet: {}
+
+paths:
+  contracts: "contracts"
+
+environment: .env
