@@ -1,0 +1,49 @@
+{
+  "deployedAt": "user-provided, recorded 2026-09-12",
+  "deployedBy": "user (manual deployment, not via scripts/deploy.ts)",
+  "gitSha": "30cc7c4bad491550af7fdb6f5c5fcd8d9748b675",
+  "network": {
+    "chainId": 61999,
+    "rpcUrl": "https://studio.genlayer.com/api",
+    "explorerUrl": "https://explorer-studio.genlayer.com"
+  },
+  "contracts": {
+    "oddless_duel": {
+      "sourceBytes": 28652,
+      "sourceSha256": "b523e5093c49fc2cb686ef77e162629f49906cf950e1645a9f12b2edd6e5b1a7",
+      "address": "0xaA76a84Fc83f9e6bC163404DD2BAe795F20221f0",
+      "explorerAddressUrl": "https://explorer-studio.genlayer.com/address/0xaA76a84Fc83f9e6bC163404DD2BAe795F20221f0",
+      "verified": {
+        "method": "live readContract/getContractSchema call against Studionet, read-only",
+        "schemaMethodCount": 13,
+        "schemaMethods": [
+          "accept", "create_challenge", "expire_unfunded", "expire_unmatched",
+          "get_challenge", "get_challenge_count", "get_challenge_for_settlement",
+          "list_challenge_ids", "mark_locked", "mark_settled", "resolve",
+          "run_sanity_check", "set_vault"
+        ],
+        "get_challenge_count": 0
+      }
+    },
+    "oddless_vault": {
+      "sourceBytes": 9841,
+      "sourceSha256": "6073d9cc2985af148849bbb9c0d119f304abd047dc6c2a87805d81f9da754325",
+      "address": "0xb7fA6Bb6C078e0e116E6E7f9541416c638556fC4",
+      "explorerAddressUrl": "https://explorer-studio.genlayer.com/address/0xb7fA6Bb6C078e0e116E6E7f9541416c638556fC4",
+      "verified": {
+        "method": "live readContract/getContractSchema call against Studionet, read-only",
+        "schemaMethodCount": 6,
+        "schemaMethods": ["fund", "get_balance", "get_deposit", "refund_unmatched", "set_duel", "settle"],
+        "get_balance": 0
+      }
+    }
+  },
+  "wiring": {
+    "status": "UNCONFIRMED",
+    "note": "set_vault(vault_address) on Duel and set_duel(duel_address) on Vault are write calls with no corresponding public view method, so they cannot be verified read-only. Confirm directly with whoever ran the deployment, or attempt fund() on a real challenge and expect 'Duel contract not configured' / 'Only the deployer' style reverts if unwired."
+  },
+  "frontendBuild": {
+    "command": "next build",
+    "result": "succeeded against these two addresses"
+  }
+}

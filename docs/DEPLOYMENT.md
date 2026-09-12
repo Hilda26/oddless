@@ -89,18 +89,32 @@ NEXT_PUBLIC_VAULT_CONTRACT_ADDRESS=<address from the record above>
 
 ## Actual deployment status for this build
 
-**No live deployment has been produced in this session.** The single
-external blocker is exactly what the spec anticipates: **no funded
-Studionet signer was available in this environment.** Every command
-above has been prepared, wired end-to-end, and exercised against the
-real (downloaded) py-genlayer-std v0.2.12 runtime through direct-mode
-testing — the only step not performed is submitting real transactions to
-the live Studionet RPC, which requires GEN-funded credentials this
-environment does not hold.
+**Both contracts are live on Studionet**, deployed manually by the
+project owner (this environment had no funded signer, so
+`scripts/deploy.ts` itself was never run here — see
+`deployments/studionet-manual-2026-09.json` for the full record):
 
-To produce real deployment evidence: obtain a Studionet-funded private
-key (e.g. from the GenLayer Studio faucet/dashboard for the target
-account), export it as `DEPLOYER_PRIVATE_KEY`, and run
+| Contract | Address | Explorer |
+| --- | --- | --- |
+| `OddlessDuel` | `0xaA76a84Fc83f9e6bC163404DD2BAe795F20221f0` | https://explorer-studio.genlayer.com/address/0xaA76a84Fc83f9e6bC163404DD2BAe795F20221f0 |
+| `OddlessVault` | `0xb7fA6Bb6C078e0e116E6E7f9541416c638556fC4` | https://explorer-studio.genlayer.com/address/0xb7fA6Bb6C078e0e116E6E7f9541416c638556fC4 |
+
+Verified read-only against the live RPC (no signer needed for this
+check): `getContractSchema` on both addresses returns the exact expected
+method set (13 methods on Duel, 6 on Vault), and both report fresh state
+(`get_challenge_count() == 0`, `get_balance() == 0`). `next build` builds
+cleanly against these two addresses in `.env.local`.
+
+**Not yet confirmed: cross-contract wiring** (`Duel.set_vault(vault)`,
+`Vault.set_duel(duel)`). Both are write calls with no corresponding
+public view method, so they cannot be checked read-only — confirm
+directly with whoever deployed, or the first real `fund()` call will
+reveal it immediately (`"Duel contract not configured"` from Vault, or a
+stalled `mark_locked` request, if unwired).
+
+If a *new* deployment is ever needed instead: obtain a Studionet-funded
+private key (e.g. from the GenLayer Studio faucet/dashboard for the
+target account), export it as `DEPLOYER_PRIVATE_KEY`, and run
 `npx tsx scripts/deploy.ts`. Do not paste that key into chat, a commit,
 or any `NEXT_PUBLIC_*` variable.
 

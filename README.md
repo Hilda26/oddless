@@ -83,7 +83,7 @@ docs/                  see below
 | `npm run build` | ✅ succeeds |
 | `pytest tests/contract/direct/` | ✅ 65/65 |
 | `genvm-lint check` (both contracts) | ✅ Validation passed (see `docs/CONSENSUS.md` for the two documented, investigated findings) |
-| Live Studionet deployment | ⏳ not yet performed — needs a funded signer, see `docs/DEPLOYMENT.md` |
+| Live Studionet deployment | ✅ live — verified via schema + state read calls, see `docs/DEPLOYMENT.md` (cross-contract wiring not independently confirmed) |
 
 ## Contributing / working on this repo
 
