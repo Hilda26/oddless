@@ -86,13 +86,13 @@ export function useTransaction<T>() {
     setState(initial<T>());
   }, []);
 
-  const execute = useCallback(async (params: ExecuteParams<T>) => {
+  const execute = useCallback(async (params: ExecuteParams<T>): Promise<boolean> => {
     const runId = ++runIdRef.current;
     const stillCurrent = () => runIdRef.current === runId;
 
     if (!params.isCorrectNetwork) {
       setState({ state: "WRONG_NETWORK", txHash: null, error: "Wrong network — switch to Studionet.", result: null });
-      return;
+      return false;
     }
 
     setState({ state: "AWAITING_SIGNATURE", txHash: null, error: null, result: null });
@@ -101,7 +101,7 @@ export function useTransaction<T>() {
     try {
       hash = await params.write();
     } catch (err: unknown) {
-      if (!stillCurrent()) return;
+      if (!stillCurrent()) return false;
       const code = (err as { code?: number })?.code;
       if (code === 4001) {
         setState({ state: "USER_REJECTED", txHash: null, error: "Transaction was rejected in your wallet.", result: null });
@@ -113,10 +113,10 @@ export function useTransaction<T>() {
           result: null,
         });
       }
-      return;
+      return false;
     }
 
-    if (!stillCurrent()) return;
+    if (!stillCurrent()) return false;
     setState({ state: "SUBMITTED", txHash: hash, error: null, result: null });
     setState((prev) => ({ ...prev, state: "CONSENSUS_RUNNING" }));
 
@@ -129,17 +129,17 @@ export function useTransaction<T>() {
         interval: params.intervalMs ?? 5000,
       });
     } catch (err) {
-      if (!stillCurrent()) return;
+      if (!stillCurrent()) return false;
       setState({
         state: "CONSENSUS_FAILURE",
         txHash: hash,
         error: err instanceof Error ? err.message : "Consensus did not finalize this transaction in time.",
         result: null,
       });
-      return;
+      return false;
     }
 
-    if (!stillCurrent()) return;
+    if (!stillCurrent()) return false;
     setState((prev) => ({ ...prev, state: "FINALIZED" }));
 
     const executionFailed =
@@ -152,7 +152,7 @@ export function useTransaction<T>() {
         error: "The transaction finalized but execution failed on-chain.",
         result: null,
       });
-      return;
+      return false;
     }
 
     setState((prev) => ({ ...prev, state: "EXECUTION_CONFIRMED" }));
@@ -162,17 +162,17 @@ export function useTransaction<T>() {
     try {
       result = await params.reread();
     } catch (err) {
-      if (!stillCurrent()) return;
+      if (!stillCurrent()) return false;
       setState({
         state: "RPC_ERROR",
         txHash: hash,
         error: err instanceof Error ? err.message : "Failed to re-read contract state after finalization.",
         result: null,
       });
-      return;
+      return false;
     }
 
-    if (!stillCurrent()) return;
+    if (!stillCurrent()) return false;
     if (params.validate && !params.validate(result)) {
       setState({
         state: "STATE_MISMATCH",
@@ -180,10 +180,11 @@ export function useTransaction<T>() {
         error: "Re-read on-chain state did not match the expected outcome.",
         result,
       });
-      return;
+      return false;
     }
 
     setState({ state: "DONE", txHash: hash, error: null, result });
+    return true;
   }, []);
 
   return { ...state, execute, reset, isTerminal: isTerminal(state.state), isFailure: isFailure(state.state) };

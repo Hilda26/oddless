@@ -10,6 +10,7 @@ import { ChallengeHeader } from "@/components/duel/ChallengeHeader";
 import { Countdown } from "@/components/duel/Countdown";
 import { TxLifecycle } from "@/components/duel/TxLifecycle";
 import { Button } from "@/components/ui/Button";
+import { useNow } from "@/lib/time/useNow";
 
 export default function ChallengeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -17,6 +18,7 @@ export default function ChallengeDetailPage({ params }: { params: Promise<{ id: 
   const wallet = useWallet();
   const { data: challenge, loading, error, refetch } = useChallenge(challengeId);
   const sanityTx = useTransaction<null>();
+  const now = useNow();
 
   if (challengeId === null) {
     return <p className="p-10 font-ui text-side-a">Invalid duel id.</p>;
@@ -29,6 +31,7 @@ export default function ChallengeDetailPage({ params }: { params: Promise<{ id: 
   }
 
   const isCreator = wallet.address?.toLowerCase() === challenge.creator.toLowerCase();
+  const acceptExpired = now > challenge.acceptDeadline.getTime();
 
   async function runSanityCheck() {
     if (!wallet.address) return;
@@ -91,7 +94,11 @@ export default function ChallengeDetailPage({ params }: { params: Promise<{ id: 
       {(challenge.status === "OPEN" || challenge.status === "MATCHED") && (
         <Link href={`/d/${id}/accept`}>
           <Button variant="primary" size="lg">
-            {challenge.status === "OPEN" ? "Accept this duel" : "Go to funding"}
+            {challenge.status === "OPEN" && acceptExpired
+              ? "Expire / recover"
+              : challenge.status === "OPEN"
+                ? "Accept this duel"
+                : "Go to funding"}
           </Button>
         </Link>
       )}

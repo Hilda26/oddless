@@ -22,16 +22,18 @@ export function useChallenge(challengeId: bigint | null, pollMs = 6000) {
   });
 
   const refetch = useCallback(async () => {
-    if (challengeId === null) return;
+    if (challengeId === null) return null;
     try {
       const data = await duelContract.getChallenge(challengeId);
       setState({ data, loading: false, error: null });
+      return data;
     } catch (err) {
       setState((prev) => ({
         ...prev,
         loading: false,
         error: err instanceof Error ? err.message : "Failed to load challenge.",
       }));
+      return null;
     }
   }, [challengeId]);
 
@@ -54,16 +56,18 @@ export function useDeposit(challengeId: bigint | null, pollMs = 6000) {
   });
 
   const refetch = useCallback(async () => {
-    if (challengeId === null) return;
+    if (challengeId === null) return null;
     try {
       const data = await vaultContract.getDeposit(challengeId);
       setState({ data, loading: false, error: null });
+      return data;
     } catch (err) {
       setState((prev) => ({
         ...prev,
         loading: false,
         error: err instanceof Error ? err.message : "Failed to load deposit.",
       }));
+      return null;
     }
   }, [challengeId]);
 
